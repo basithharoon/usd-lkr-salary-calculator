@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary & Tax Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        input { padding: 10px; width: 150px; margin: 10px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        table { margin: auto; border-collapse: collapse; width: 70%; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: right; }
+        th { background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h2>Salary & Tax Calculator</h2>
+    <label>Conversion Rate (USD to LKR):</label>
+    <input type="number" id="conversionRate" value="320">
+    <br>
+    <label>USD Salary:</label>
+    <input type="number" id="usdSalary">
+    <br>
+    <label>LKR Split %:</label>
+    <input type="number" id="lkrSplit" value="50">
+    <br>
+    <button onclick="calculateSalary()">Calculate</button>
+
+    <h3>Salary Breakdown</h3>
+    <table>
+        <tr><th>Description</th><th>Amount (LKR)</th></tr>
+        <tr><td>LKR Split</td><td id="lkrSplitValue">0</td></tr>
+        <tr><td>USD Split in LKR</td><td id="usdSplitValue">0</td></tr>
+        <tr><td>Total Salary in LKR</td><td id="totalSalary">0</td></tr>
+        <tr><td>LKR Taxes</td><td id="lkrTaxes">0</td></tr>
+        <tr><td>USD Taxes</td><td id="usdTaxes">0</td></tr>
+        <tr><td>Total Taxes</td><td id="totalTaxes">0</td></tr>
+        <tr><td>EPF</td><td id="epf">0</td></tr>
+        <tr><td>ETF</td><td id="etf">0</td></tr>
+        <tr><td>Total Contributions</td><td id="totalContributions">0</td></tr>
+        <tr><td>Total Deductions</td><td id="totalDeductions">0</td></tr>
+        <tr><td>Take Home Pay</td><td id="takeHomePay">0</td></tr>
+        <tr><td>Effective Tax Rate</td><td id="taxRate">0%</td></tr>
+        <tr><td>Effective Contribution Rate</td><td id="contributionRate">0%</td></tr>
+        <tr><td>Effective Deductions Rate</td><td id="deductionRate">0%</td></tr>
+    </table>
+
+    <script>
+        function calculateSalary() {
+            let conversionRate = parseFloat(document.getElementById("conversionRate").value);
+            let usdSalary = parseFloat(document.getElementById("usdSalary").value);
+            let lkrSplitPercent = parseFloat(document.getElementById("lkrSplit").value) / 100;
+
+            let lkrSplit = usdSalary * lkrSplitPercent * conversionRate;
+            let usdSplitLKR = (usdSalary * (1 - lkrSplitPercent)) * conversionRate;
+            let totalSalary = lkrSplit + usdSplitLKR;
+            
+            let lkrTaxes = lkrSplit * 0.12;
+            let usdTaxes = usdSplitLKR * 0.12;
+            let totalTaxes = lkrTaxes + usdTaxes;
+
+            let epf = totalSalary * 0.08;
+            let etf = totalSalary * 0.03;
+            let totalContributions = epf + etf;
+
+            let totalDeductions = totalTaxes + totalContributions;
+            let takeHomePay = totalSalary - totalDeductions;
+
+            document.getElementById("lkrSplitValue").innerText = lkrSplit.toFixed(2);
+            document.getElementById("usdSplitValue").innerText = usdSplitLKR.toFixed(2);
+            document.getElementById("totalSalary").innerText = totalSalary.toFixed(2);
+            document.getElementById("lkrTaxes").innerText = lkrTaxes.toFixed(2);
+            document.getElementById("usdTaxes").innerText = usdTaxes.toFixed(2);
+            document.getElementById("totalTaxes").innerText = totalTaxes.toFixed(2);
+            document.getElementById("epf").innerText = epf.toFixed(2);
+            document.getElementById("etf").innerText = etf.toFixed(2);
+            document.getElementById("totalContributions").innerText = totalContributions.toFixed(2);
+            document.getElementById("totalDeductions").innerText = totalDeductions.toFixed(2);
+            document.getElementById("takeHomePay").innerText = takeHomePay.toFixed(2);
+            
+            document.getElementById("taxRate").innerText = ((totalTaxes / totalSalary) * 100).toFixed(2) + "%";
+            document.getElementById("contributionRate").innerText = ((totalContributions / totalSalary) * 100).toFixed(2) + "%";
+            document.getElementById("deductionRate").innerText = ((totalDeductions / totalSalary) * 100).toFixed(2) + "%";
+        }
+    </script>
+</body>
+</html>
